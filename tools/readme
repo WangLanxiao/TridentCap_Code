@@ -1,0 +1,77 @@
+  ×î½ü×öµÄÒ»¸öÏîÄ¿ÒªÓÃµ½ÓïÑÔÄ£ÐÍ£¬ÔÚÍøÉÏÕÒÁËÒ»Ð©¿ªÔ´µÄ¹¤¾ß°üÊÔÁËÒ»ÏÂ¡£·Ï»°²»¶àËµ£¬ÏÂÃæÖ±½Ó½éÉÜÒ»ÏÂSRILMµÄ°²×°·½·¨¡£
+
+   ÎÒÊµÔÚubuntu14.04µ×ÏÂÊ¹ÓÃSRILM¡£
+
+   SRILMµÄÏÂÔØµØÖ·£¨ÎÒÊ¹ÓÃµÄÊÇ1.7.1°æ±¾£©
+
+1¡¢°²×° tcl
+
+   ÓÐÓÃSRILMÒªÓÃµ½tcl¹¤¾ßµÄÒ»Ð©¹¦ÄÜ£¬ËùÒÔÎÒÏÈ×°ÁËtcl¡£
+
+   tclµÄÏÂÔØµØÖ·£¨ÎÒÊ¹ÓÃµÄÊÇ tcl8.6.5-src.tar.gz£©
+
+   ÔÚtcl½âÑ¹°üµÄunixÎÄ¼þ¼ÐÖÐµÄREADMEÎÄ¼þ½éÉÜÁËtclµÄ°²×°·½·¨¡£ÆäÊµÒ²¾ÍÈý¸öÃüÁî
+
+  ./configure
+
+  make
+
+  make install
+
+2¡¢Ïà¹Ø¹¤¾ßµÄ¼ì²é
+   SRILMµÄÊ¹ÓÃ»¹ÐèÒª£º
+
+  A template-capableANSI-C/C++ compiler, preferably gcc version 3.4.3 or higher.
+¡¡GNU make: to control compilation and installation.
+¡¡GNU gawk: required for many of the utility scripts.
+¡¡GNU gzip: to unpack the distribution, and to allow SRILM programs to handle ¡°.Z¡± and ¡°.gz¡± compressed datafiles (highly recommended).
+¡¡bzip2: to handle ¡°.bz2¡å compressed files (optional).
+¡¡p7zip: to handle ¡°7-zip¡± compressed files (optional).
+
+   ¿ÉÒÔÔÚÖÕ¶ËÊäÈëÏà¹Ø¹¤¾ßÃû£¬¿´¿´ÊÇ·ñ×°ÁË£¨ÀýÈçÊäÈë¡°make¡±£©¡£Èç¹ûÃ»ÓÐ°²×°£¬»á³öÏÖÌáÊ¾£¬Ö±½Ó°´ÌáÊ¾°²×°¾ÍºÃ¡£
+
+3¡¢SRILMµÄ°²×°
+
+  ËµÁËÕâÃ´¶à£¬ÖÕÓÚµ½°²×°SRILMÁË£¡£¡£¡
+
+  ÎÒµÄSRILM½âÑ¹ºó·ÅÔÚ/home/chenhuajie/Downloads/srilmÀïÃæ£¬Õâ¸öµØÖ·Ö®ºóÒªÓÃµ½¡£
+
+3.1 ÐÞ¸Äsrilm/MakeFile£º
+
+¡¡ÐÞ¸Ä»òÔÚµÚ7ÐÐÏÂÃæ¼ÓÉÏÒ»ÐÐ
+¡¡# SRILM = /home/speech/stolcke/project/srilm/devel (Ô­£©
+¡¡SRILM = $(PWD)
+
+3.2 ÔÙÐÞ¸Äsrilm/common/Makefile.machine.*****:
+
+    *****ËùÌîµÄÄÚÈÝºÍ±¾»úÓ²¼þÆ½Ì¨ÓÐ¹Ø¡£¿ÉÒÔÔÚÖÕ¶ËÊäÈëÒ»ÏÂÃüÁî²é¿´£º
+
+  uname -i
+
+    ±ÈÈçÎÒµÄ»ú×ÓÊÇx86_64£¬ÄÇÎÒÐÞ¸ÄµÄÊÇMakefile.machine.i686-m64Õâ¸öÎÄ¼þ¡£
+
+ÕÒµ½£º
+¡¡¡¡¡¡¡¡TCL_INCLUDE =
+¡¡¡¡¡¡¡¡TCL_LIBRARY =
+ÐÞ¸ÄÎª£º
+¡¡¡¡¡¡¡¡TCL_INCLUDE =
+¡¡¡¡¡¡¡¡TCL_LIBRARY =
+       NO_TCL = X¡¡¡¡
+ÕÒµ½£º
+¡¡¡¡¡¡¡¡GAWK = /usr/bin/awk
+ÐÞ¸ÄÎª£º
+¡¡     GAWK = /usr/bin/gawk
+
+3.3
+
+    make World
+
+
+3.4
+export PATH=/data1/wlx/project/202303c2p_TransferLearning/tools/srilm-1.7.1/bin:$PATH
+
+
+3.5
+
+  make test
+
