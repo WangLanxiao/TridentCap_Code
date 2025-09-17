@@ -1,0 +1,26 @@
+_BASE_: "./updown.yaml"
+
+###################################### DATALOADER ######################################
+DATALOADER:
+  TRAIN_BATCH_SIZE: 8
+  TEST_BATCH_SIZE: 16
+  SEQ_PER_SAMPLE_NET1: 3
+  SEQ_PER_SAMPLE_NET2: 3
+
+######################################### Engine #########################################
+ENGINE:
+#  NAME: 'RLTrainer'
+#  NAME: 'RLMeanTrainer'
+  NAME: 'RLBeamTrainer'
+
+####################################### Optimizer #######################################
+SOLVER:
+  NAME: 'Adam'
+  EPOCH: 30
+  BASE_LR: 0.000003
+  
+####################################### lr scheduler ####################################### 
+LR_SCHEDULER:
+  NAME: 'StepLR'
+  STEP_SIZE: 3
+  GAMMA: 0.8

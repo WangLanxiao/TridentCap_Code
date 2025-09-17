@@ -1,0 +1,143 @@
+OUTPUT_DIR: './work_dirs/baseline'
+FIND_UNUSE: False
+############################ DATASETS #######################################
+DATASETS:
+  TRAIN: 'TF_MERGE'
+  VAL: 'TF_MERGE'
+  TEST: 'TF_MERGE'
+
+###################################### DATALOADER ######################################
+DATALOADER:
+  MODE: 'TF'
+  TRAIN_BATCH_SIZE: 8
+  TEST_BATCH_SIZE: 8
+  NUM_WORKERS: 4
+  FEATS_FOLDER: '../open_source_dataset/stylecaption_merge/features/'
+  ANNO_FOLDER:  '../open_source_dataset/stylecaption_merge/'
+  ANNO_WEIGHT_TRAIN: [1.0, 1.0, 0.8]
+  ANNO_FOLDER_TRAIN:  ['../open_source_dataset/transfer_learning/stylecaption_merge/train_add_keywords.pkl',
+                       './dataprocessing/coco_normal.pkl',
+                      './work_dirs/TF_MERGE_TOPK/14_TF_31s.pkl'
+  ]
+  ANNO_FOLDER_VAL:  ['../open_source_dataset/stylecaption_merge/val_add_keywords.pkl']
+  ANNO_FOLDER_TEST:  ['../open_source_dataset/stylecaption_merge/test_cap_initial_E30.pkl']
+  MAX_FEAT_NUM: 36
+  TYPE: ['normal', 'positive', 'negative', 'funny', 'romantic']
+  SEQ_PER_SAMPLE_NET1: 5
+  SEQ_PER_SAMPLE_NET2: 3    # no need
+
+######################################### Engine #########################################
+ENGINE:
+  NAME: 'DefaultTrainer'
+
+######################################### Scheduled sampling #########################################
+SCHEDULED_SAMPLING:
+  START_EPOCH: 0
+  INC_EVERY_EPOCH: 5
+  INC_PROB: 0.05
+  MAX_PROB: 0.25
+
+######################################### MODEL #########################################
+MODEL:
+  VOCAB_SIZE: 4499 # include <BOS>/<EOS>
+  META_ARCHITECTURE: 'TFMERGE'
+  DECODER: 'UpDownDecoderMerge'
+  DECODER_DIM: 1024
+  PREDICTOR: 'WLXPredictor'
+  PRED_DROPOUT: 0.5
+  MAX_SEQ_LEN_NET1: 27
+  MAX_SEQ_LEN_NET2: 27
+  UPDOWN:
+    ATT_EMBED_SIZE: 512
+    DROPOUT1: 0.0
+    DROPOUT2: 0.0
+    ATT_EMBED_DROPOUT: 0.0
+#################################### Visual embedding ####################################
+  VISUAL_EMBED:
+    NAME: 'VisualBaseEmbedding'
+    IN_DIM: 2048
+    OUT_DIM: 512
+    ACTIVATION: 'relu'
+    USE_NORM: False
+    DROPOUT: 0.5
+
+  S_E:
+      NAME: 'BaseSEMerge'
+      WORD_EMBEDDING_SIZE: 512
+      WORD_VEC_SIZE: 512
+      HIDDEN_SIZE: 512
+      BIDIRECTIONAL: True
+      WORD_DROP_OUT: 0.2
+      RNN_DROP_OUT: 0.0
+      RNN_NUM_LAYERS: 1
+      RNN_TYPE: 'lstm'
+      TOKEN_ACTIVATION: 'relu'
+      TOKEN_DROPOUT: 0.3
+  VL_M:
+    NAME: 'VL_ConcatMerge'
+    HIDDEN_SIZE: 512
+    NUM_INPUT_CHANNELS: 1024
+    NUM_OUTPUT_CHANNELS: 512
+    NUM_FEATMAPS: 1
+
+####################################### Optimizer #######################################
+SOLVER:
+  NAME: 'Adam'
+  EPOCH: 40
+  WRITE_PERIOD: 8
+  CHECKPOINT_PERIOD: 1
+  EVAL_PERIOD: 1
+  BASE_LR: 0.0005
+  BIAS_LR_FACTOR: 1.0
+  WEIGHT_DECAY: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+  WEIGHT_DECAY_BIAS: 0.0
+  MOMENTUM: 0.9
+  DAMPENING: 0.0
+  NESTEROV: 0.0
+  BETAS: [0.9, 0.999]
+  EPS: 1e-8
+  GRAD_CLIP: 0.1
+  GRAD_CLIP_TYPE: 'value'
+  NORM_TYPE: 2.0
+  SPECIAL_WEIGHT_DECAY: [{'token_embed.embeddings':1.0,'predictor.logits':1.0}]
+
+####################################### lr scheduler #######################################
+LR_SCHEDULER:
+  NAME: 'StepLR'
+  STEP_SIZE: 3
+  GAMMA: 0.7
+
+####################################### losses #######################################
+LOSSES:
+  NAMES: ['Style_CrossEntropy']
+
+####################################### scorer #######################################
+SCORER:
+  NAME: 'BaseScorer'
+  TYPES: ['Cider']
+  WEIGHTS: [1.0]
+  GT_PATH: './open_source_dataset/transfer_learning/stylecaption_merge/train_gts.pkl'
+  CIDER_CACHED: './open_source_dataset/transfer_learning/stylecaption_merge/train_cider.pkl'
+  EOS_ID: 0
+
+####################################### decode strategy #######################################
+DECODE_STRATEGY:
+  NAME: 'BeamSearcherMerge'
+  BEAM_SIZE: 3
+
+####################################### evaluation #######################################
+INFERENCE:
+  NAME: 'COCOEvaler'
+  STYLE: 4   #   need to change  corresponding to ['normal', 'positive', 'negative', 'funny', 'romantic']
+  VOCAB: '../open_source_dataset/transfer_learning/stylecaption_merge/vocabulary.txt'
+  ID_KEY: 'image_id'
+  VALUE: 'caption'
+  VAL_ANNFILE: '../open_source_dataset/stylecaption_merge/test_positive.json'
+#  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/senticap_test_negative.json'
+  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/senticap_test_positive.json'   #no need
+#  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/senticap_test_normal.json'
+#  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/flickrstyle_test_romantic.json'
+#  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/flickrstyle_test_funny.json'
+#  TEST_ANNFILE: './open_source_dataset/stylecaption_merge/flickrstyle_test_normal.json'
+  GENERATION_MODE: True
